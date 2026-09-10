@@ -74,7 +74,85 @@ p4c.set_visual_style(STYLE)
 # --- layout ----------------------------------------------------------------
 # Edge-weighted Kamada-Kawai keeps strongly tied people close, so the three
 # communities separate visibly while weak cross-community ties stay visible.
-p4c.layout_network("kamada-kawai edgeAttribute=weight unweighted=false")
+import itertools, math, requests
+
+comm = {str(r.id): r.community_id for r in nodes.itertuples()}
+
+
+def positions():
+    pos = p4c.get_node_position()
+    return {str(i): (float(pos.loc[i, "x"]), float(pos.loc[i, "y"])) for i in pos.index}
+
+
+def separation(pts):
+    """Mean distance within communities over mean distance between them:
+    lower means the three groups are more clearly apart."""
+    within, between = [], []
+    for a, b in itertools.combinations(pts, 2):
+        (within if comm[a] == comm[b] else between).append(math.dist(pts[a], pts[b]))
+    return (sum(within) / len(within)) / (sum(between) / len(between))
+
+
+def write_positions(pts):
+    names = p4c.get_table_columns("node", ["name"])
+    view = p4c.get_network_views()[0]
+    # the PUT returns an empty body, which p4c.cyrest_put cannot parse
+    r = requests.put(f"http://127.0.0.1:1234/v1/networks/{suid}/views/{view}/nodes", json=[
+        {"SUID": int(s), "view": [{"visualProperty": "NODE_X_LOCATION", "value": pts[names.loc[s, "name"]][0]},
+                                  {"visualProperty": "NODE_Y_LOCATION", "value": pts[names.loc[s, "name"]][1]}]}
+        for s in names.index], timeout=60)
+    r.raise_for_status()
+
+
+# Kamada-Kawai on the topology alone separates the three communities well;
+# with edgeAttribute=weight Cytoscape uses the weight as an edge *length*, which
+# pulls the strongest ties longest and mixes the groups. The result depends on
+# the (random) starting positions, so run it a few times and keep the layout in
+# which the three communities are most clearly separated.
+best = None
+for run in range(6):
+    p4c.layout_network("kamada-kawai unweighted=true randomize=true")
+    pts = positions(); score = separation(pts)
+    xs = [p[0] for p in pts.values()]; ys = [p[1] for p in pts.values()]
+    print(f"layout run {run}: separation {score:.3f}, extent {max(xs)-min(xs):.0f} x {max(ys)-min(ys):.0f}")
+    if best is None or score < best[0]:
+        best = (score, pts)
+write_positions(best[1])
+print(f"kept layout with separation {best[0]:.3f}")
+
+
+def remove_overlaps(gap=1.15, rounds=50):
+    """Kamada-Kawai ignores node size, so big neighbours can sit on top of each
+    other and their edges to a common node look doubled. Nudge overlapping
+    pairs apart along their axis until every pair is at least `gap` times the
+    sum of their radii apart. Positions are written back through CyREST."""
+    dmin, dmax = nodes.degree.min(), nodes.degree.max()
+    radius = {str(r.id): (18 + (r.degree - dmin) / (dmax - dmin) * (70 - 18)) / 2
+              for r in nodes.itertuples()}
+    pos = p4c.get_node_position()
+    pts = {str(i): [float(pos.loc[i, "x"]), float(pos.loc[i, "y"])] for i in pos.index}
+    for _ in range(rounds):
+        moved = 0
+        for a, b in itertools.combinations(pts, 2):
+            (ax, ay), (bx, by) = pts[a], pts[b]
+            d = math.hypot(bx - ax, by - ay)
+            need = (radius[a] + radius[b]) * gap
+            if d < need:
+                if d < 1e-6:
+                    ux, uy, d = 1.0, 0.0, 1e-6
+                else:
+                    ux, uy = (bx - ax) / d, (by - ay) / d
+                push = (need - d) / 2
+                pts[a][0] -= ux * push; pts[a][1] -= uy * push
+                pts[b][0] += ux * push; pts[b][1] += uy * push
+                moved += 1
+        if not moved:
+            break
+    write_positions({k: tuple(v) for k, v in pts.items()})
+    print(f"overlap removal: done after {_ + 1} rounds")
+
+
+remove_overlaps()
 p4c.fit_content()
 
 # --- exports (tutorial Option 1 and Option 2) -------------------------------

@@ -6,47 +6,22 @@
   "style" : [ {
     "selector" : "node",
     "css" : {
-      "border-opacity" : 1.0,
       "font-size" : 10,
-      "height" : 40.0,
-      "color" : "rgb(34,34,34)",
-      "background-color" : "rgb(200,0,0)",
       "background-opacity" : 1.0,
       "text-opacity" : 1.0,
+      "color" : "rgb(34,34,34)",
+      "shape" : "ellipse",
+      "border-width" : 1.0,
+      "border-color" : "rgb(255,255,255)",
+      "width" : 60.0,
+      "border-opacity" : 1.0,
       "font-family" : "SansSerif.plain",
       "font-weight" : "normal",
-      "width" : 60.0,
+      "height" : 40.0,
+      "background-color" : "rgb(200,0,0)",
       "text-valign" : "center",
       "text-halign" : "center",
-      "border-width" : 1.0,
-      "shape" : "ellipse",
-      "border-color" : "rgb(255,255,255)",
       "content" : "data(label)"
-    }
-  }, {
-    "selector" : "node[degree > 599]",
-    "css" : {
-      "width" : 70.0
-    }
-  }, {
-    "selector" : "node[degree = 599]",
-    "css" : {
-      "width" : 70.0
-    }
-  }, {
-    "selector" : "node[degree > 41][degree < 599]",
-    "css" : {
-      "width" : "mapData(degree,41,599,18.0,70.0)"
-    }
-  }, {
-    "selector" : "node[degree = 41]",
-    "css" : {
-      "width" : 18.0
-    }
-  }, {
-    "selector" : "node[degree < 41]",
-    "css" : {
-      "width" : 18.0
     }
   }, {
     "selector" : "node[community_id = '0']",
@@ -89,6 +64,31 @@
       "height" : 18.0
     }
   }, {
+    "selector" : "node[degree > 599]",
+    "css" : {
+      "width" : 70.0
+    }
+  }, {
+    "selector" : "node[degree = 599]",
+    "css" : {
+      "width" : 70.0
+    }
+  }, {
+    "selector" : "node[degree > 41][degree < 599]",
+    "css" : {
+      "width" : "mapData(degree,41,599,18.0,70.0)"
+    }
+  }, {
+    "selector" : "node[degree = 41]",
+    "css" : {
+      "width" : 18.0
+    }
+  }, {
+    "selector" : "node[degree < 41]",
+    "css" : {
+      "width" : 18.0
+    }
+  }, {
     "selector" : "node:selected",
     "css" : {
       "background-color" : "rgb(255,255,0)"
@@ -97,18 +97,18 @@
     "selector" : "edge",
     "css" : {
       "width" : 1.0,
+      "source-arrow-color" : "rgb(0,0,0)",
       "target-arrow-color" : "rgb(0,0,0)",
-      "line-style" : "solid",
+      "font-size" : 10,
+      "target-arrow-shape" : "none",
       "source-arrow-shape" : "none",
-      "content" : "",
+      "opacity" : 1.0,
+      "line-style" : "solid",
       "color" : "rgb(0,0,0)",
       "font-family" : "SansSerif.plain",
       "font-weight" : "normal",
       "line-color" : "rgb(154,154,154)",
-      "font-size" : 10,
-      "opacity" : 1.0,
-      "source-arrow-color" : "rgb(0,0,0)",
-      "target-arrow-shape" : "none",
+      "content" : "",
       "text-opacity" : 1.0
     }
   }, {

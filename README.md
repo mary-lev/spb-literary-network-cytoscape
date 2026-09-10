@@ -48,8 +48,11 @@ article's companion site ([literary-communities.vercel.app](https://literary-com
 2. **Cytoscape** — `scripts/build_in_cytoscape.py` drives Cytoscape 3.10.3
    through its REST interface (py4cytoscape): import the edge and node tables,
    create a visual style (colour by community, node size by degree, edge width
-   and opacity by weight, transliterated name labels), run the edge-weighted
-   Kamada–Kawai layout.
+   and colour by weight, transliterated name labels), run the
+   Kamada–Kawai layout (topology only: with edge weights Cytoscape treats the weight
+   as an edge length, which mixes the groups), then nudge apart the few nodes the layout left
+   overlapping (Kamada–Kawai ignores node size, and two big nodes drawn on top
+   of each other make their shared edges look doubled).
 3. **Publishing, option 1** — export a static image:
    `cytoscape/network.png`.
 4. **Publishing, option 2** — export *Network and View* as Cytoscape.js JSON

@@ -20,10 +20,9 @@
   .legend { display:flex; flex-wrap:wrap; gap: 14px 24px; margin: 10px 0 14px; font-family: system-ui, sans-serif; font-size: 14px; }
   .legend span::before { content:""; display:inline-block; width:14px; height:14px; border-radius:50%; margin-right:8px; vertical-align:-2px; }
   .legend .c0::before { background:var(--c0);} .legend .c3::before { background:var(--c3);} .legend .c17::before { background:var(--c17);}
-  .viz { display:grid; grid-template-columns: 1fr; gap: 12px; }
+  .viz { display:grid; grid-template-columns: 1fr 270px; gap: 14px; align-items: start; }
   #cy { height: 78vh; min-height: 520px; max-height: 900px; border:1px solid var(--line); border-radius:8px; background:#fff; }
-  aside { font-family: system-ui, sans-serif; font-size: 14px; background: var(--panel); border:1px solid var(--line); border-radius:8px; padding: 12px 14px; min-height: 64px; }
-  aside dl { display:flex; flex-wrap:wrap; gap: 4px 28px; }
+  aside { font-family: system-ui, sans-serif; font-size: 14px; background: var(--panel); border:1px solid var(--line); border-radius:8px; padding: 14px; position: sticky; top: 12px; }
   aside h3 { margin: 0 0 6px; font-size: 15px; }
   aside dl { margin: 0; } aside dt { color: var(--muted); font-size: 12px; margin-top: 8px; } aside dd { margin: 0; }
   .controls { font-family: system-ui, sans-serif; font-size: 14px; display:flex; flex-wrap:wrap; gap: 14px; align-items:center; margin: 0 0 10px; }
@@ -36,7 +35,7 @@
   figcaption { font-size: 13px; color: var(--muted); font-family: system-ui, sans-serif; }
   code { font-size: .9em; background: var(--panel); padding: 1px 4px; border-radius: 4px; }
   footer { color: var(--muted); font-size: 14px; padding: 30px 20px 50px; font-family: system-ui, sans-serif; }
-  @media (max-width: 800px) { #cy { height: 60vh; } }
+  @media (max-width: 800px) { .viz { grid-template-columns: 1fr; } #cy { height: 60vh; } aside { position: static; } }
 </style>
 </head>
 <body>
@@ -86,7 +85,7 @@
   <ul>
     <li><strong>Data.</strong> <a href="https://doi.org/10.5281/zenodo.13753154">Literary Events in Saint Petersburg (1999–2019) from SPbLitGuide Newsletters</a> (Zenodo, CC BY 4.0): 15,012 events with participant lists, plus a table of 11,777 persons with VIAF and Wikidata identifiers.</li>
     <li><strong>Network construction.</strong> A Python script (pandas, NetworkX) rebuilds the co-participation network from the event table and reproduces the figures in the article exactly. It then keeps the top 50 members by degree of communities 0, 3 and 17 and writes a node table and an edge table.</li>
-    <li><strong>Cytoscape.</strong> The tables are imported into Cytoscape 3.10.3, a style is defined (colour by community, size by degree, edge width and opacity by weight, transliterated labels), and the network is laid out with the edge-weighted Kamada–Kawai algorithm. Cytoscape is driven through its REST interface with py4cytoscape, so every step is reproducible.</li>
+    <li><strong>Cytoscape.</strong> The tables are imported into Cytoscape 3.10.3, a style is defined (colour by community, size by degree, edge width and opacity by weight, transliterated labels), and the network is laid out with the Kamada–Kawai algorithm. Cytoscape is driven through its REST interface with py4cytoscape, so every step is reproducible.</li>
     <li><strong>Publishing, option 1.</strong> A static image exported from Cytoscape (below).</li>
     <li><strong>Publishing, option 2.</strong> The network exported as Cytoscape.js JSON and the style exported as “Style for cytoscape.js”, hosted in this GitHub repository and rendered by Cytoscape.js on this page. The CyNetShare service used in the tutorial is no longer online, so this page takes its place.</li>
   </ul>
