@@ -71,12 +71,17 @@ files itself and `index.html` does what CyNetShare did: render the exported
 network and style with Cytoscape.js. The tutorial itself notes that any server
 able to host the two files is fine.
 
-Two small quirks of Cytoscape's exporter are worked around in the page rather
-than by editing the exported file: opacity values are written on Cytoscape's
-0–255 scale (Cytoscape.js expects 0–1), and the Java font name
-`SansSerif.plain` is not a CSS font family. Cytoscape also writes decimal
-numbers with the system locale, so it must run under an English locale
-(`LC_ALL=C.UTF-8`) for the mappings to be valid JSON for the browser.
+A few quirks of Cytoscape's exporter are worth knowing. The plain *Export
+Network* command omits node positions, so the script fetches the network
+*view* through CyREST, which is what *Export Network and View* produces. Locked
+node size is not written to the cytoscape.js style, so width and height are
+mapped separately. Opacity values come out on Cytoscape's 0–255 scale
+(Cytoscape.js expects 0–1) and the Java font name `SansSerif.plain` is not a
+CSS font family; the page converts both on load rather than editing the exported
+file. Wide translucent edges are drawn with a visible outline in the PNG export,
+which looks like doubled edges, so weak ties are faded by colour instead.
+Finally, Cytoscape writes decimal numbers with the system locale, so it must run
+under an English locale (`LC_ALL=C.UTF-8`) for the mappings to be valid.
 
 ## Tools used
 

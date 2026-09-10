@@ -50,7 +50,7 @@ p4c.create_visual_style(STYLE, defaults={
     "NODE_LABEL_FONT_SIZE": 10,
     "NODE_LABEL_COLOR": "#222222",
     "EDGE_STROKE_UNSELECTED_PAINT": "#9A9A9A",
-    "EDGE_TRANSPARENCY": 120,
+    "EDGE_TRANSPARENCY": 255,
     "NETWORK_BACKGROUND_PAINT": "#FFFFFF",
 })
 p4c.set_node_label_mapping("label", style_name=STYLE)
@@ -64,9 +64,11 @@ for setter in (p4c.set_node_width_mapping, p4c.set_node_height_mapping):
            [18, 70], mapping_type="c", style_name=STYLE)
 p4c.set_edge_line_width_mapping("weight", [float(edges.weight.min()), float(edges.weight.max())],
                                 [0.5, 8], mapping_type="c", style_name=STYLE)
-# weak ties fade into the background, strong ties stand out
-p4c.set_edge_opacity_mapping("weight", [0.05, 0.5, float(edges.weight.max())],
-                             [40, 140, 220], mapping_type="c", style_name=STYLE)
+# weak ties fade into the background, strong ties stand out. Colour rather
+# than transparency: Cytoscape draws wide translucent edges with a visible
+# outline, which looks like doubled edges in the PNG export.
+p4c.set_edge_color_mapping("weight", [0.05, 0.5, float(edges.weight.max())],
+                           ["#E3E3E3", "#B0B0B0", "#606060"], mapping_type="c", style_name=STYLE)
 p4c.set_visual_style(STYLE)
 
 # --- layout ----------------------------------------------------------------

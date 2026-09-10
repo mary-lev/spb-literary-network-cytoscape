@@ -20,9 +20,10 @@
   .legend { display:flex; flex-wrap:wrap; gap: 14px 24px; margin: 10px 0 14px; font-family: system-ui, sans-serif; font-size: 14px; }
   .legend span::before { content:""; display:inline-block; width:14px; height:14px; border-radius:50%; margin-right:8px; vertical-align:-2px; }
   .legend .c0::before { background:var(--c0);} .legend .c3::before { background:var(--c3);} .legend .c17::before { background:var(--c17);}
-  .viz { display:grid; grid-template-columns: 1fr 280px; gap: 16px; }
-  #cy { height: 640px; border:1px solid var(--line); border-radius:8px; background:#fff; }
-  aside { font-family: system-ui, sans-serif; font-size: 14px; background: var(--panel); border:1px solid var(--line); border-radius:8px; padding: 14px; }
+  .viz { display:grid; grid-template-columns: 1fr; gap: 12px; }
+  #cy { height: 78vh; min-height: 520px; max-height: 900px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  aside { font-family: system-ui, sans-serif; font-size: 14px; background: var(--panel); border:1px solid var(--line); border-radius:8px; padding: 12px 14px; min-height: 64px; }
+  aside dl { display:flex; flex-wrap:wrap; gap: 4px 28px; }
   aside h3 { margin: 0 0 6px; font-size: 15px; }
   aside dl { margin: 0; } aside dt { color: var(--muted); font-size: 12px; margin-top: 8px; } aside dd { margin: 0; }
   .controls { font-family: system-ui, sans-serif; font-size: 14px; display:flex; flex-wrap:wrap; gap: 14px; align-items:center; margin: 0 0 10px; }
@@ -35,7 +36,7 @@
   figcaption { font-size: 13px; color: var(--muted); font-family: system-ui, sans-serif; }
   code { font-size: .9em; background: var(--panel); padding: 1px 4px; border-radius: 4px; }
   footer { color: var(--muted); font-size: 14px; padding: 30px 20px 50px; font-family: system-ui, sans-serif; }
-  @media (max-width: 800px) { .viz { grid-template-columns: 1fr; } #cy { height: 480px; } }
+  @media (max-width: 800px) { #cy { height: 60vh; } }
 </style>
 </head>
 <body>
@@ -149,12 +150,21 @@
       elements, style,
       layout: { name: 'preset' },   // keep the positions computed in Cytoscape
     });
-    cy.style().selector('node').style({ 'text-wrap': 'none', 'font-size': 9, 'min-zoomed-font-size': 7 }).update();
+    // Names are always drawn (the checkbox hides them); a white halo keeps them legible over edges.
+    cy.style().selector('node').style({ 'text-wrap': 'none', 'font-size': 14, 'text-outline-color': '#fff', 'text-outline-width': 2, 'text-outline-opacity': 0.9 }).update();
     cy.style().selector('.faded').style({ 'opacity': 0.12 }).update();
     cy.style().selector('.hl').style({ 'opacity': 1 }).update();
     cy.style().selector('edge.hl').style({ 'line-color': '#333', 'opacity': 0.9 }).update();
     cy.style().selector('.nolabel').style({ 'label': '' }).update();
-    cy.fit(undefined, 20);
+    // Start on the dense core (people with at least three ties here) so names are readable;
+    // the few peripheral nodes are reached by panning or with "Fit to view".
+    const core = cy.nodes().filter(n => n.degree() >= 3);
+    cy.fit(core.length > 20 ? core : undefined, 10);
+    // Labels live in graph units (as in the Cytoscape export), so size them to be
+    // about 9 px at the initial zoom; they grow together with the nodes when zooming in.
+    const fs = Math.min(36, Math.round(9 / cy.zoom()));
+    cy.style().selector('node').style({ 'font-size': fs, 'text-outline-width': Math.max(1, fs / 7) }).update();
+    window.cy = cy;
     status.textContent = `${cy.nodes().length} people, ${cy.edges().length} ties`;
 
     const info = document.getElementById('info');
