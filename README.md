@@ -86,6 +86,58 @@ which looks like doubled edges, so weak ties are faded by colour instead.
 Finally, Cytoscape writes decimal numbers with the system locale, so it must run
 under an English locale (`LC_ALL=C.UTF-8`) for the mappings to be valid.
 
+## Outcome
+
+An assessment of the tutorial after running every step of it.
+
+**Clear.** The writing is very good for its audience. Each step is one action
+with one annotated screenshot, the two options are explained up front with an
+honest "this one is fiddly" warning, and the prerequisites are linked. The
+distinction it insists on, *Export Network and View* rather than *Export
+Network*, turned out to be the single most important detail: the plain export
+has no node positions, and that is exactly the bug I hit when driving Cytoscape
+by script instead of by menu.
+
+**Clean.** It is honest about its own weak spot. It says CyNetShare "can be a
+bit buggy" and lists workarounds, and it says Gist is only a stand-in for anyone
+with a real server. That framing is what made it legitimate to replace
+CyNetShare with GitHub Pages without departing from the tutorial's intent.
+
+**Workable in 2026, only partly.**
+
+- Option 1, the static image, works exactly as described.
+- Option 2 works up to step 8. Cytoscape 3.10 still has the same menus, the
+  `.cyjs` and *Style for cytoscape.js* exports exist, and Gists still work.
+- Step 9 is dead. The CyNetShare host refuses connections, and both example
+  links are expired goo.gl shortlinks. A student following the page today
+  reaches a wall with no explanation. The fix, a small HTML page that loads the
+  two exported files with Cytoscape.js, is easy, but the tutorial does not
+  mention it, so a beginner would not know it exists.
+
+**What the tutorial does not prepare you for.** These cost time here and would
+also meet a student on a laptop:
+
+- Cytoscape writes decimal numbers in the system locale. On an Italian machine
+  the style file came out with commas and silently broke every mapping in the
+  browser. The tutorial assumes an English locale without saying so.
+- The style export is only approximately Cytoscape.js: opacity comes out on a
+  0–255 scale, the font name is a Java name, and locked node size is dropped.
+  CyNetShare presumably patched these itself; without it, the page has to.
+- Layout is not covered at all, yet it decides whether the published graph
+  says anything. Kamada–Kawai with the weight attribute treats weight as edge
+  length and mixed the communities, and it ignores node size, so large nodes
+  overlapped and their shared edges looked doubled.
+- Scale is never discussed. A learner with a real dataset will discover that
+  Cytoscape.js in a browser needs a subgraph of at most a few thousand edges.
+  Choosing that slice is the real intellectual work of the exercise, and the
+  tutorial's toy dataset hides it.
+
+**Verdict.** As a lesson it is a model of how to write a tutorial. As a recipe
+it has one broken step and several hidden assumptions, so it now needs an
+instructor's note: skip CyNetShare and host the two files on GitHub Pages with a
+small Cytoscape.js page, run Cytoscape under an English locale, and choose a
+subgraph before you start. Each of these points is applied in this repository.
+
 ## Tools used
 
 - Cytoscape 3.10.3 with py4cytoscape 1.13 (import, style, layout, export)
