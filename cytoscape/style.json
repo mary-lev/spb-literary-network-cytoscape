@@ -1,0 +1,125 @@
+[ {
+  "format_version" : "1.0",
+  "generated_by" : "cytoscape-3.10.3",
+  "target_cytoscapejs_version" : "~2.1",
+  "title" : "SPbLitCommunities",
+  "style" : [ {
+    "selector" : "node",
+    "css" : {
+      "border-color" : "rgb(255,255,255)",
+      "height" : 50.0,
+      "background-color" : "rgb(200,0,0)",
+      "background-opacity" : 1.0,
+      "shape" : "ellipse",
+      "font-size" : 10,
+      "width" : 50.0,
+      "text-valign" : "center",
+      "text-halign" : "center",
+      "text-opacity" : 1.0,
+      "font-family" : "SansSerif.plain",
+      "font-weight" : "normal",
+      "color" : "rgb(34,34,34)",
+      "border-opacity" : 1.0,
+      "border-width" : 1.0,
+      "content" : "data(label)"
+    }
+  }, {
+    "selector" : "node[community_id = '0']",
+    "css" : {
+      "background-color" : "rgb(213,94,0)"
+    }
+  }, {
+    "selector" : "node[community_id = '3']",
+    "css" : {
+      "background-color" : "rgb(0,114,178)"
+    }
+  }, {
+    "selector" : "node[community_id = '17']",
+    "css" : {
+      "background-color" : "rgb(0,158,115)"
+    }
+  }, {
+    "selector" : "node:selected",
+    "css" : {
+      "background-color" : "rgb(255,255,0)"
+    }
+  }, {
+    "selector" : "edge",
+    "css" : {
+      "font-size" : 10,
+      "target-arrow-shape" : "none",
+      "line-style" : "solid",
+      "line-color" : "rgb(154,154,154)",
+      "content" : "",
+      "text-opacity" : 1.0,
+      "source-arrow-color" : "rgb(0,0,0)",
+      "source-arrow-shape" : "none",
+      "width" : 1.0,
+      "opacity" : 0.47058823529411764,
+      "target-arrow-color" : "rgb(0,0,0)",
+      "font-family" : "SansSerif.plain",
+      "font-weight" : "normal",
+      "color" : "rgb(0,0,0)"
+    }
+  }, {
+    "selector" : "edge[weight > 9.7232]",
+    "css" : {
+      "opacity" : 0.8627450980392157
+    }
+  }, {
+    "selector" : "edge[weight = 9.7232]",
+    "css" : {
+      "opacity" : 0.8627450980392157
+    }
+  }, {
+    "selector" : "edge[weight > 0.5][weight < 9.7232]",
+    "css" : {
+      "opacity" : "mapData(weight,0.5,9.7232,140,220)"
+    }
+  }, {
+    "selector" : "edge[weight > 0.05][weight < 0.5]",
+    "css" : {
+      "opacity" : "mapData(weight,0.05,0.5,40,140)"
+    }
+  }, {
+    "selector" : "edge[weight = 0.05]",
+    "css" : {
+      "opacity" : 0.1568627450980392
+    }
+  }, {
+    "selector" : "edge[weight < 0.05]",
+    "css" : {
+      "opacity" : 0.1568627450980392
+    }
+  }, {
+    "selector" : "edge[weight > 9.7232]",
+    "css" : {
+      "width" : 8.0
+    }
+  }, {
+    "selector" : "edge[weight = 9.7232]",
+    "css" : {
+      "width" : 8.0
+    }
+  }, {
+    "selector" : "edge[weight > 0.0161][weight < 9.7232]",
+    "css" : {
+      "width" : "mapData(weight,0.0161,9.7232,0.5,8.0)"
+    }
+  }, {
+    "selector" : "edge[weight = 0.0161]",
+    "css" : {
+      "width" : 0.5
+    }
+  }, {
+    "selector" : "edge[weight < 0.0161]",
+    "css" : {
+      "width" : 0.5
+    }
+  }, {
+    "selector" : "edge:selected",
+    "css" : {
+      "line-color" : "rgb(255,0,0)"
+    }
+  } ]
+} ]

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
+<title>Literary Communities of St. Petersburg in Cytoscape</title>
+<style>
+  :root { --ink:#1f2328; --muted:#59636e; --line:#d0d7de; --bg:#ffffff; --panel:#f6f8fa;
+          --c0:#D55E00; --c3:#0072B2; --c17:#009E73; }
+  * { box-sizing: border-box; }
+  body { margin:0; font: 16px/1.55 Georgia, "Times New Roman", serif; color:var(--ink); background:var(--bg); }
+  header, main, footer { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+  header { padding-top: 40px; }
+  h1 { font-size: 2rem; line-height:1.2; margin: 0 0 .4rem; }
+  .sub { color: var(--muted); margin: 0 0 1.5rem; }
+  h2 { font-size: 1.25rem; margin: 2rem 0 .6rem; }
+  p { max-width: 70ch; }
+  a { color: #0969da; }
+  .legend { display:flex; flex-wrap:wrap; gap: 14px 24px; margin: 10px 0 14px; font-family: system-ui, sans-serif; font-size: 14px; }
+  .legend span::before { content:""; display:inline-block; width:14px; height:14px; border-radius:50%; margin-right:8px; vertical-align:-2px; }
+  .legend .c0::before { background:var(--c0);} .legend .c3::before { background:var(--c3);} .legend .c17::before { background:var(--c17);}
+  .viz { display:grid; grid-template-columns: 1fr 280px; gap: 16px; }
+  #cy { height: 640px; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  aside { font-family: system-ui, sans-serif; font-size: 14px; background: var(--panel); border:1px solid var(--line); border-radius:8px; padding: 14px; }
+  aside h3 { margin: 0 0 6px; font-size: 15px; }
+  aside dl { margin: 0; } aside dt { color: var(--muted); font-size: 12px; margin-top: 8px; } aside dd { margin: 0; }
+  .controls { font-family: system-ui, sans-serif; font-size: 14px; display:flex; flex-wrap:wrap; gap: 14px; align-items:center; margin: 0 0 10px; }
+  .controls input[type=search] { padding: 6px 8px; border:1px solid var(--line); border-radius:6px; font-size:14px; min-width: 220px; }
+  table { border-collapse: collapse; font-family: system-ui, sans-serif; font-size: 14px; margin: 8px 0; }
+  th, td { border-bottom: 1px solid var(--line); padding: 6px 12px 6px 0; text-align:left; vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; }
+  ul { padding-left: 1.2rem; max-width: 75ch; }
+  figure { margin: 1rem 0; } figure img { max-width:100%; border:1px solid var(--line); border-radius:8px; }
+  figcaption { font-size: 13px; color: var(--muted); font-family: system-ui, sans-serif; }
+  code { font-size: .9em; background: var(--panel); padding: 1px 4px; border-radius: 4px; }
+  footer { color: var(--muted); font-size: 14px; padding: 30px 20px 50px; font-family: system-ui, sans-serif; }
+  @media (max-width: 800px) { .viz { grid-template-columns: 1fr; } #cy { height: 480px; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Literary Communities of St. Petersburg in Cytoscape</h1>
+  <p class="sub">Three literary communities, 1999–2019, reconstructed from event co-participation in the SPbLitGuide newsletter and published with Cytoscape and Cytoscape.js.</p>
+</header>
+
+<main>
+  <p>This page is a small practical exercise following Miriam Posner's tutorial
+  <a href="https://miriamposner.com/classes/dh201w21/tutorials-guides/network-analysis/publish-your-cytoscape-graph/">Publish your Cytoscape graph</a>.
+  The network below was built, styled and exported in Cytoscape 3.10, then rendered here with Cytoscape.js from the two files Cytoscape produced: the network (<code>network.cyjs</code>) and the visual style (<code>style.json</code>).</p>
+
+  <h2>The network</h2>
+  <p>Nodes are people who took part in literary events in St. Petersburg. Two people are linked when they appeared at the same event. Each shared event with <em>n</em> participants adds 1/(<em>n</em>−1) to the pair's weight, so a small reading counts more than a large festival panel; weights are summed over all shared events. The full network has 10,656 people and 106,127 ties. Shown here are the 50 most connected members of three communities detected with the Louvain algorithm in the article, which correspond to well-documented aesthetic groupings of the city's literary scene. Node size follows degree in the full network; edge width and opacity follow the tie weight.</p>
+
+  <div class="legend">
+    <span class="c0">Community 0 · experimental / avant-garde poetry (Translit circle)</span>
+    <span class="c3">Community 3 · literary traditionalism, the “thick journals” Zvezda and Neva</span>
+    <span class="c17">Community 17 · “new prose”, the Petersburg Fundamentalists</span>
+  </div>
+
+  <div class="controls">
+    <input id="search" type="search" placeholder="Find a person (transliterated name)…" aria-label="Find a person">
+    <label><input id="labels" type="checkbox" checked> Show names</label>
+    <button id="fit" type="button">Fit to view</button>
+    <span id="status" style="color:var(--muted)">Loading network…</span>
+  </div>
+
+  <div class="viz">
+    <div id="cy" role="img" aria-label="Interactive network of 150 participants in three St. Petersburg literary communities"></div>
+    <aside id="info">
+      <h3>Click a person</h3>
+      <p style="margin:0;color:var(--muted)">Scroll to zoom, drag to pan. Clicking a node highlights its direct ties and shows who the person is.</p>
+    </aside>
+  </div>
+
+  <h2>Key figures</h2>
+  <table>
+    <tr><th>Community</th><th>Five most connected members (names as transliterated in the dataset, ALA-LC)</th></tr>
+    <tr><td style="color:var(--c0)">0 · avant-garde poetry</td><td>Aleksandr Skidan, Roman Osminkin, Dmitriĭ Holynko-Volʹfson, Arkadiĭ Dragomoshchenko, Pavel Arsenʹev</td></tr>
+    <tr><td style="color:var(--c3)">3 · thick journals</td><td>Valeriĭ Popov, I͡Akov Hordin, Aleksandr Kushner, Aleksandr Melikhov, Nikita Eliseev</td></tr>
+    <tr><td style="color:var(--c17)">17 · new prose</td><td>Sergeĭ Nosov, Natasha Romanova, Pavel Krusanov, Aleksandr Sekat͡skiĭ, Boris Averin</td></tr>
+  </table>
+
+  <h2>How it was made</h2>
+  <ul>
+    <li><strong>Data.</strong> <a href="https://doi.org/10.5281/zenodo.13753154">Literary Events in Saint Petersburg (1999–2019) from SPbLitGuide Newsletters</a> (Zenodo, CC BY 4.0): 15,012 events with participant lists, plus a table of 11,777 persons with VIAF and Wikidata identifiers.</li>
+    <li><strong>Network construction.</strong> A Python script (pandas, NetworkX) rebuilds the co-participation network from the event table and reproduces the figures in the article exactly. It then keeps the top 50 members by degree of communities 0, 3 and 17 and writes a node table and an edge table.</li>
+    <li><strong>Cytoscape.</strong> The tables are imported into Cytoscape 3.10.3, a style is defined (colour by community, size by degree, edge width and opacity by weight, transliterated labels), and the network is laid out with the edge-weighted Kamada–Kawai algorithm. Cytoscape is driven through its REST interface with py4cytoscape, so every step is reproducible.</li>
+    <li><strong>Publishing, option 1.</strong> A static image exported from Cytoscape (below).</li>
+    <li><strong>Publishing, option 2.</strong> The network exported as Cytoscape.js JSON and the style exported as “Style for cytoscape.js”, hosted in this GitHub repository and rendered by Cytoscape.js on this page. The CyNetShare service used in the tutorial is no longer online, so this page takes its place.</li>
+  </ul>
+
+  <figure>
+    <img src="cytoscape/network.png" alt="Static export of the network from Cytoscape" loading="lazy">
+    <figcaption>Option 1: the static PNG exported from Cytoscape (File › Export › Network to Image).</figcaption>
+  </figure>
+
+  <h2>Tools used</h2>
+  <ul>
+    <li>Cytoscape 3.10.3 and py4cytoscape 1.13 (import, styling, layout, export)</li>
+    <li>Python 3.10 with pandas and NetworkX (data preparation, verification against the article)</li>
+    <li>Cytoscape.js 3.30 (interactive rendering in the browser)</li>
+    <li>GitHub and GitHub Pages (hosting the repository, the exported files and this page)</li>
+  </ul>
+
+  <h2>Read more</h2>
+  <ul>
+    <li>Maria Levchenko, <a href="https://jcls.io/article/id/4217/">Computational Analysis of Literary Communities</a>, <em>Journal of Computational Literary Studies</em>.</li>
+    <li>Interactive exploration of all communities, venues and event types: <a href="https://literary-communities.vercel.app/">literary-communities.vercel.app</a> (<a href="https://github.com/mary-lev/literary_communities">source</a>).</li>
+    <li>This repository: <a href="https://github.com/mary-lev/spb-literary-network-cytoscape">github.com/mary-lev/spb-literary-network-cytoscape</a>.</li>
+  </ul>
+</main>
+
+<footer>Data: SPbLitGuide newsletter, compiled by Daria Sukhovey; dataset by Maria Levchenko (University of Bologna). Page built as a course exercise, 2026.</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.4/cytoscape.min.js"></script>
+<script>
+(async function () {
+  const status = document.getElementById('status');
+  try {
+    const [net, styles] = await Promise.all([
+      fetch('cytoscape/network.cyjs').then(r => r.json()),
+      fetch('cytoscape/style.json').then(r => r.json()),
+    ]);
+    // Cytoscape exports node/edge attributes under "data" and the layout under "position".
+    const elements = net.elements;
+    // The style exported by Cytoscape uses the legacy "css" key; Cytoscape.js still accepts it.
+    // Two known quirks of Cytoscape's exporter are patched here without touching the file:
+    // opacity is written on Cytoscape's 0-255 scale (Cytoscape.js wants 0-1), and the Java
+    // font name "SansSerif.plain" is not a CSS font family.
+    const style = styles[0].style.map(rule => {
+      const css = Object.assign({}, rule.css || rule.style);
+      for (const k of Object.keys(css)) {
+        if (k.endsWith('opacity')) {
+          const v = css[k];
+          if (typeof v === 'number' && v > 1) css[k] = +(v / 255).toFixed(3);
+          else if (typeof v === 'string' && v.startsWith('mapData')) {
+            const m = v.match(/mapData\(([^,]+),([^,]+),([^,]+),([^,]+),([^)]+)\)/);
+            if (m && +m[4] > 1) css[k] = `mapData(${m[1]},${m[2]},${m[3]},${(+m[4]/255).toFixed(3)},${(+m[5]/255).toFixed(3)})`;
+          }
+        }
+        if (k === 'font-family') css[k] = 'system-ui, sans-serif';
+      }
+      return { selector: rule.selector, style: css };
+    });
+
+    const cy = cytoscape({
+      container: document.getElementById('cy'),
+      elements, style,
+      layout: { name: 'preset' },   // keep the positions computed in Cytoscape
+    });
+    cy.style().selector('node').style({ 'text-wrap': 'none', 'font-size': 9, 'min-zoomed-font-size': 7 }).update();
+    cy.style().selector('.faded').style({ 'opacity': 0.12 }).update();
+    cy.style().selector('.hl').style({ 'opacity': 1 }).update();
+    cy.style().selector('edge.hl').style({ 'line-color': '#333', 'opacity': 0.9 }).update();
+    cy.style().selector('.nolabel').style({ 'label': '' }).update();
+    cy.fit(undefined, 20);
+    status.textContent = `${cy.nodes().length} people, ${cy.edges().length} ties`;
+
+    const info = document.getElementById('info');
+    function show(n) {
+      const d = n.data();
+      const links = [];
+      if (d.viaf_id && String(d.viaf_id) !== 'nan') links.push(`<a href="https://viaf.org/viaf/${String(d.viaf_id).replace(/'/g,'')}/" target="_blank" rel="noopener">VIAF</a>`);
+      if (d.wikidata_id && String(d.wikidata_id) !== 'nan') links.push(`<a href="https://www.wikidata.org/wiki/${d.wikidata_id}" target="_blank" rel="noopener">Wikidata</a>`);
+      const neigh = n.neighborhood('node').sort((a, b) => b.data('degree') - a.data('degree')).slice(0, 6).map(x => x.data('label')).join(', ');
+      info.innerHTML = `<h3>${d.label}</h3><div style="color:var(--muted)">${d.name_cyrillic || ''}</div>
+        <dl><dt>Community</dt><dd>${d.community} (${d.community_id})</dd>
+        <dt>Degree in full network</dt><dd>${d.degree}</dd>
+        <dt>Ties in this slice</dt><dd>${n.degree()}</dd>
+        <dt>Strongest neighbours</dt><dd>${neigh || '—'}</dd>
+        ${links.length ? `<dt>Authority records</dt><dd>${links.join(' · ')}</dd>` : ''}</dl>`;
+    }
+    function highlight(n) {
+      cy.elements().removeClass('hl faded');
+      const nb = n.closedNeighborhood();
+      cy.elements().not(nb).addClass('faded');
+      nb.addClass('hl');
+    }
+    cy.on('tap', 'node', e => { show(e.target); highlight(e.target); });
+    cy.on('tap', e => { if (e.target === cy) cy.elements().removeClass('hl faded'); });
+
+    document.getElementById('fit').onclick = () => cy.fit(undefined, 20);
+    document.getElementById('labels').onchange = e => cy.nodes().toggleClass('nolabel', !e.target.checked);
+    document.getElementById('search').oninput = e => {
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) { cy.elements().removeClass('hl faded'); return; }
+      const hit = cy.nodes().filter(n => (n.data('label') || '').toLowerCase().includes(q) || (n.data('name_cyrillic') || '').toLowerCase().includes(q));
+      cy.elements().addClass('faded'); hit.removeClass('faded').addClass('hl');
+      if (hit.length === 1) { show(hit[0]); highlight(hit[0]); cy.animate({ center: { eles: hit[0] }, zoom: 1.2 }, { duration: 300 }); }
+    };
+  } catch (err) {
+    status.textContent = 'Could not load the network files: ' + err.message;
+  }
+})();
+</script>
+</body>
+</html>
