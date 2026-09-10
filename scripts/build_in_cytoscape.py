@@ -56,8 +56,12 @@ p4c.create_visual_style(STYLE, defaults={
 p4c.set_node_label_mapping("label", style_name=STYLE)
 p4c.set_node_color_mapping("community_id", list(COLOURS), list(COLOURS.values()),
                            mapping_type="d", style_name=STYLE)
-p4c.set_node_size_mapping("degree", [int(nodes.degree.min()), int(nodes.degree.max())],
-                          [18, 70], mapping_type="c", style_name=STYLE)
+# NODE_SIZE (locked width/height) is not written to the cytoscape.js style
+# export, so unlock the dimensions and map width and height separately.
+p4c.lock_node_dimensions(False, style_name=STYLE)
+for setter in (p4c.set_node_width_mapping, p4c.set_node_height_mapping):
+    setter("degree", [int(nodes.degree.min()), int(nodes.degree.max())],
+           [18, 70], mapping_type="c", style_name=STYLE)
 p4c.set_edge_line_width_mapping("weight", [float(edges.weight.min()), float(edges.weight.max())],
                                 [0.5, 8], mapping_type="c", style_name=STYLE)
 # weak ties fade into the background, strong ties stand out
@@ -75,7 +79,13 @@ p4c.fit_content()
 for f in OUT.glob("network*"):
     f.unlink()
 p4c.export_image(str(OUT / "network.png"), type="PNG", zoom=300, overwrite_file=True)
-p4c.export_network(str(OUT / "network.cyjs"), type="cyjs", overwrite_file=True)
+# "File > Export > Network and View" = the network view as Cytoscape.js JSON,
+# including node positions. The plain "network export" command omits the view,
+# so fetch the view through CyREST instead.
+view = p4c.get_network_views()[0]
+cyjs = p4c.cyrest_get(f"networks/{suid}/views/{view}")
+import json
+(OUT / "network.cyjs").write_text(json.dumps(cyjs, ensure_ascii=False, indent=1))
 p4c.export_visual_styles(str(OUT / "style.json"), type="json", styles=STYLE, overwrite_file=True)
 p4c.save_session(str(OUT / "spb_literary_network.cys"), overwrite_file=True)
 print("exported:", sorted(p.name for p in OUT.iterdir()))

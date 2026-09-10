@@ -7,12 +7,12 @@
     "selector" : "node",
     "css" : {
       "border-color" : "rgb(255,255,255)",
-      "height" : 50.0,
+      "height" : 40.0,
       "background-color" : "rgb(200,0,0)",
       "background-opacity" : 1.0,
       "shape" : "ellipse",
       "font-size" : 10,
-      "width" : 50.0,
+      "width" : 60.0,
       "text-valign" : "center",
       "text-halign" : "center",
       "text-opacity" : 1.0,
@@ -37,6 +37,56 @@
     "selector" : "node[community_id = '17']",
     "css" : {
       "background-color" : "rgb(0,158,115)"
+    }
+  }, {
+    "selector" : "node[degree > 599]",
+    "css" : {
+      "width" : 70.0
+    }
+  }, {
+    "selector" : "node[degree = 599]",
+    "css" : {
+      "width" : 70.0
+    }
+  }, {
+    "selector" : "node[degree > 41][degree < 599]",
+    "css" : {
+      "width" : "mapData(degree,41,599,18.0,70.0)"
+    }
+  }, {
+    "selector" : "node[degree = 41]",
+    "css" : {
+      "width" : 18.0
+    }
+  }, {
+    "selector" : "node[degree < 41]",
+    "css" : {
+      "width" : 18.0
+    }
+  }, {
+    "selector" : "node[degree > 599]",
+    "css" : {
+      "height" : 70.0
+    }
+  }, {
+    "selector" : "node[degree = 599]",
+    "css" : {
+      "height" : 70.0
+    }
+  }, {
+    "selector" : "node[degree > 41][degree < 599]",
+    "css" : {
+      "height" : "mapData(degree,41,599,18.0,70.0)"
+    }
+  }, {
+    "selector" : "node[degree = 41]",
+    "css" : {
+      "height" : 18.0
+    }
+  }, {
+    "selector" : "node[degree < 41]",
+    "css" : {
+      "height" : 18.0
     }
   }, {
     "selector" : "node:selected",
