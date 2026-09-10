@@ -163,7 +163,7 @@
     // Labels live in graph units (as in the Cytoscape export), so size them to be
     // about 9 px at the initial zoom; they grow together with the nodes when zooming in.
     const fs = Math.min(36, Math.round(9 / cy.zoom()));
-    cy.style().selector('node').style({ 'font-size': fs, 'text-outline-width': Math.max(1, fs / 7) }).update();
+    cy.style().selector('node').style({ 'font-size': fs, 'text-outline-width': Math.max(1, fs / 7), 'text-valign': 'bottom', 'text-margin-y': 2 }).update();
     window.cy = cy;
     status.textContent = `${cy.nodes().length} people, ${cy.edges().length} ties`;
 
